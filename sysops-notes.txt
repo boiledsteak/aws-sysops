@@ -1,0 +1,162 @@
+root aws account access IAM that can create
+- user
+- group
+- role
+- policy
+
+
+IAM : identity access management
+
+best practice to use individual accounts instead of root
+
+
+ALB : application load balancer
+
+
+accounts are not tied to one country but objects such as EC2 container, are
+
+
+dynamic alias - one email address can have multiple accounts using alias
+
+
+to create alias
+1. services menu
+2. security, identity & compliance
+3. IAM
+
+
+budget - set a budget and alert if going to reach limit
+You will be notified when 
+1) your actual spend reaches 85% 
+2) your actual spend reaches 100% 
+3) if your forecasted spend is expected to reach 100%
+
+
+3 ways to log in to AWS
+1. online console (website)
+2. CLI
+3. API
+
+
+principal - a person/application that can make a request for an action on an AWS resource. part of RBAC I suppose
+
+principal types
+1. IAM user
+2. IAM role
+3. federated user
+4. application
+
+
+
+ARN : amazon resource name
+
+
+two types of access control polcicy (allow/deny)
+1. identity based
+2. resource based
+
+
+
+access control process
+
+start
+
+IAM principal
+
+1. provide request context; info about the request
+2. authentication; username/pw or access key ID and secret 
+3. authorisation; use request context to determine if request is allow/deny
+
+
+
+IAM user vs IAM role
+- user is for long term access with permanent credentials
+- role is for temporary access
+
+role is safer than user. should minimise user
+create user only when real human wants to access aws service
+
+
+
+IAM user group 
+- a group of IAM user
+- can set permissions for an entire group
+
+
+permissions are ADDITIVE for user group and user
+wherever there's explicit deny, it will always be followed regardless
+
+
+can authenticate as a user, but not as a group
+
+but can get permissions as a group
+
+
+IAM user group is NOT a principal thats why cannot authenticate groups
+
+
+actually IAM user is not recommended at all. Why?
+
+- IAM user use permanent credentials. roles and IAM IC user do not
+
+- IAM user must manage credentials for each account whereas IAM IC user can manage centrally
+
+- IAM user is tied to single AWS acount. IAM IC user can connect to external active directory
+
+- IAM user must be manually deleted if staff leaves. Since IAM IC user is connected to AD, can delete from AD and it will sync with AWS IAM IC
+
+
+
+
+IAM user okay for smaller organisation
+
+
+
+
+IAM role follows cloud native best practices because specific roles with limited access and expiry date are given to applications and services. Least privilege
+
+
+
+1 IAM IC user can have access to several AWS accounts
+
+
+
+VPC: virtual private cloud
+- logical isolated portion of AWS within a region
+- 1 region can have multiple VPC
+- 1 VPC can have multiple availability zone
+- 1 availability zone can have multiple subnet
+- 1 subnet can have multiple EC2 instances
+
+hierachy
+
+Region
+vpc
+az
+subnet
+ec2 instance
+
+
+
+within VPC is router and default gateway (internet gateway)
+
+
+only way to interact with router is through the main route table
+
+
+each VPC has its own CIDR block; aka its own local private subnet
+
+
+
+S3 is outside VPC because its a public service
+S3 is like google drive. It does not have querying like mongo or sql
+
+
+
+VPC endpoint is used to access AWS services that are public ie S3, through a private connection (doesnt touch internet)
+
+
+
+API access to any AWS service ie dynamo, s3, ec2, all depend if using public connection or private connection. Both can work
+
+
