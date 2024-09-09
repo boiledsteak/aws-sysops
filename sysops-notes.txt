@@ -77,6 +77,9 @@ role is safer than user. should minimise user
 create user only when real human wants to access aws service
 
 
+the "version" field within a custom trust policy json, is the version of syntax to use. It's a date value. Cannot anyhow change
+
+
 
 IAM user group 
 - a group of IAM user
@@ -160,3 +163,7 @@ VPC endpoint is used to access AWS services that are public ie S3, through a pri
 API access to any AWS service ie dynamo, s3, ec2, all depend if using public connection or private connection. Both can work
 
 
+
+
+terraform or other apps/services will use AWS Security Token Service (STS) to assume a role
+it requires initial credentials which acts as the principal which tf authenticates with aws
