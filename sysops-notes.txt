@@ -167,3 +167,31 @@ API access to any AWS service ie dynamo, s3, ec2, all depend if using public con
 
 terraform or other apps/services will use AWS Security Token Service (STS) to assume a role
 it requires initial credentials which acts as the principal which tf authenticates with aws
+
+
+
+========================================
+IDEAL AWS security with terraform
+========================================
+
+
+create 1x IAM user account for perm credentials
+
+keep credentials in vault
+
+vault generates temp credentials for roles
+
+terraform uses temp credentials and role
+
+gitlab too
+
+
+
+BUT HCP vault-secrets doesn't support aws secrets engine. The self hosted one does. so skip this for poc
+TF itself will hold the perm credentials 
+
+
+
+
+
+//TODO follow the video and create NAT. why ?
