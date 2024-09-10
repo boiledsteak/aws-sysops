@@ -15,8 +15,8 @@ resource "aws_key_pair" "my_key" {
 }
 
 # Create Security Group for SSH access
-resource "aws_security_group" "webaccess" {
-  name        = "webaccess"
+resource "aws_security_group" "internet-access" {
+  name        = "internet-access"
   description = "Security group to allow SSH access"
   vpc_id      = "vpc-0bb5af86ff040957f"  # Replace with your existing VPC ID
 
@@ -38,7 +38,7 @@ resource "aws_security_group" "webaccess" {
   }
 
   tags = {
-    Name = "webaccess"
+    Name = "internet-access"
   }
 }
 
@@ -62,7 +62,7 @@ resource "aws_instance" "myinstance" {
   key_name = aws_key_pair.my_key.key_name
 
   # Attach the security group for SSH access
-  vpc_security_group_ids = [aws_security_group.webaccess.id]
+  vpc_security_group_ids = [aws_security_group.internet-access.id]
 
   tags = {
     Name = "myinstance"
