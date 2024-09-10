@@ -191,7 +191,36 @@ BUT HCP vault-secrets doesn't support aws secrets engine. The self hosted one do
 TF itself will hold the perm credentials 
 
 
+unused elastic IP will cost money. The auto default eip given to EC2 instances do not cost money
 
 
 
-//TODO follow the video and create NAT. why ?
+stateful vs stateless firewall
+- stateful means when there is a rule that allows A talk to B, B talk to A is allowed by default
+- stateless is opposite. If there's a rule that allows A ta B, B cannot talk to A by default
+
+
+
+security group is stateful firewall
+- security group can be applied to a group of instances within a subnet
+- security groups apply to instance level
+- only apply to instances that are within the group
+- only has allow rules
+- evaluate all rules flat
+- deny all
+
+
+network ACL is stateless firewall
+- has allow and deny rules
+- rules are in top down order
+- NACL attach to subnets
+- They apply to subnet level only
+- applies to all instances within a subnet
+- Only control traffic in and out of subnets
+- does not control traffic WITHIN subnet
+- only at the border of a subnet
+- if one subnet talk to another, then there are 2 NACLs to check rules because each subnet has 1 NACL attached
+
+
+
+
