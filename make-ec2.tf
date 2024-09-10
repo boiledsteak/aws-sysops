@@ -1,8 +1,3 @@
-# Provider Configuration for AWS
-provider "aws" {
-  region = "ap-southeast-1"  # Singapore region
-}
-
 # Key Pair - Generate an RSA key pair for SSH access
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
