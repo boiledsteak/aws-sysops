@@ -290,5 +290,32 @@ amazon machine image (AMI)
 - basically the OS image that the EC2 instance will use
 - has an EBS snapshot linked to it (persistent storage)
 - can predefine the image just like docker
-- 
 
+stopping and starting an instance will mean that the physical storage used in baremetal is different each time
+
+
+default username for ssh for t2.micro ec2 is:
+For Amazon Linux 2 or the Amazon Linux AMI, the username is ec2-user.
+For a CentOS AMI, the user name is centos.
+For a Debian AMI, the user name is admin.
+For a Fedora AMI, the user name is ec2-user or fedora.
+For a RHEL AMI, the user name is ec2-user or root.
+For a SUSE AMI, the user name is ec2-user or root.
+For a Ubuntu AMI, the user name is ubuntu.
+For an Oracle AMI, the user name is ec2-user.
+For a Bitnami AMI, the user name is bitnami.
+Otherwise, if ec2-user and root don't work, check with the AMI provider
+
+
+you can change instance type (vertical scaling) and still retain data using EBS
+
+instead of using ubuntu gparter, can use CLI
+// Create a filesystem on the EBS volume 
+sudo mkfs -t ext4 /dev/xvdf
+// Create a mount point for the EBS volume 
+sudo mkdir /data
+//Mount the EBS volume to the mount point 
+sudo mount /dev/xvdf /data
+//Make the volume mount persistent
+sudo nano /etc/fstab 
+	== then add '/dev/xvdf /data ext4 defaults,nofail 0 2' and save the file
