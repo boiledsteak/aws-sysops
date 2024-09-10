@@ -38,49 +38,6 @@ resource "aws_route_table_association" "public-1b" {
   route_table_id = aws_route_table.public.id
 }
 
-
-# create NAT gateway to public-1a subnet
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public-1a.id
-
-  tags = {
-    Name = "nat-gateway"
-  }
-}
-
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-}
-
-
-# create route table for private subnets to route internet traffic to the NAT gateway
-# Private subnet route table
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.vpc1.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
-  }
-
-  tags = {
-    Name = "private-route-table"
-  }
-}
-
-# Associate the route table with the private subnets
-resource "aws_route_table_association" "private-1a" {
-  subnet_id      = aws_subnet.private-1a.id
-  route_table_id = aws_route_table.private.id
-}
-
-resource "aws_route_table_association" "private-1b" {
-  subnet_id      = aws_subnet.private-1b.id
-  route_table_id = aws_route_table.private.id
-}
-
-
 # create the subnets
 resource "aws_subnet" "public-1a" {
   vpc_id            = aws_vpc.vpc1.id
