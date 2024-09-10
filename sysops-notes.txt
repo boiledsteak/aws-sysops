@@ -222,5 +222,73 @@ network ACL is stateless firewall
 - if one subnet talk to another, then there are 2 NACLs to check rules because each subnet has 1 NACL attached
 
 
+ec2 host: the bare metal server running ec2
 
+
+different kinds of ip addr, an ec2 instance can have
+1. public ip
+- standard internet ip
+- no charge
+- cannot be moved between instances
+- lost when instance is stopped
+- associated with a private ip
+- used in public subnet only
+
+2. private ip
+- retained when instance stops
+- used in public and private subnets
+
+
+3. elastic ip 
+- static public ip addr
+- charged if not used
+- associated with a private ip on the instance
+- can move between instances
+
+
+
+types of network interfaces
+1. elastic network interface (ENI)
+- cannot attach ENI from one AZ to another
+- ENI can only attach to subnets within the same AZ
+- can be used with any instance type
+
+2. elastic network adapter (ENA)
+- higher performance than ENI
+- higher bandwith and lower latency
+- only some instance support it
+
+
+3. elastic fabric adapter (EFA)
+- even higher performance
+- usually for AIML use
+- all instance support it
+
+
+
+
+
+types of storage for ec2 instances
+
+1. Elastic block store (EBS)
+- persistant storage
+- c drive on an ec2 instance could be stored on an ebs elsewhere, connected over network
+- means same persistant storage can be used on different instance since ebs is separated
+- ebs exist only within AZ
+
+2. instance store
+- not over network
+- natively stored on ec2 host itself
+- better performance
+- non-persistant (ephemeral)
+- only use when high performance needed or when the data has backups
+
+
+
+
+amazon machine image (AMI)
+- basically the OS image that the EC2 instance will use
+- has an EBS snapshot linked to it (persistent storage)
+- can predefine the image just like docker
+- 
 
