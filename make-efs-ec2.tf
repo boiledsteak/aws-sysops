@@ -9,16 +9,17 @@ resource "aws_key_pair" "my-efs-key-pair" {
   public_key = tls_private_key.efs-ssh-key.public_key_openssh
 }
 
-# Amazon Linux 2 AMI for the Singapore region (ap-southeast-1)
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
 
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp3"]  # Amazon Linux 2 AMI
-  }
+# Define the VPC (assuming you have an existing VPC)
+data "aws_vpc" "my_vpc" {
+  id = "vpc-0bb5af86ff040957f"  # Replace with your VPC ID
 }
+
+# Define the subnet within the VPC
+data "aws_subnet" "efs_my_subnet" {
+  id = "subnet-0f6cbb1a1f7f490d7"  # Replace with your Subnet ID
+}
+
 
 # Create EC2 Instance
 resource "aws_instance" "efs-instance" {
@@ -27,6 +28,9 @@ resource "aws_instance" "efs-instance" {
 
   # Use the key pair created above for SSH access
   key_name = aws_key_pair.my-efs-key-pair.key_name
+
+  # Specify the subnet to launch the instance in
+  subnet_id = data.aws_subnet.efs_my_subnet.id
 
   # Attach the security group for SSH access and NFS
   vpc_security_group_ids = [
@@ -40,7 +44,7 @@ resource "aws_instance" "efs-instance" {
 }
 
 # Output the private key
-output "ssh_private_key" {
+output "efs_ssh_private_key" {
   value       = tls_private_key.efs-ssh-key.private_key_pem
   sensitive   = true
   description = "The private SSH key for accessing the NFS server EC2 instance"
