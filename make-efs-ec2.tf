@@ -1,12 +1,12 @@
 # Key Pair - Generate an RSA key pair for SSH access
-resource "tls_private_key" "ssh_key" {
+resource "tls_private_key" "efs-ssh-key" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
 
 resource "aws_key_pair" "my-efs-key-pair" {
   key_name   = "my-efs-key-pair"
-  public_key = tls_private_key.ssh_key.public_key_openssh
+  public_key = tls_private_key.efs-ssh-key.public_key_openssh
 }
 
 # Amazon Linux 2 AMI for the Singapore region (ap-southeast-1)
@@ -41,7 +41,7 @@ resource "aws_instance" "efs-instance" {
 
 # Output the private key
 output "ssh_private_key" {
-  value       = tls_private_key.ssh_key.private_key_pem
+  value       = tls_private_key.efs-ssh-key.private_key_pem
   sensitive   = true
   description = "The private SSH key for accessing the NFS server EC2 instance"
 }
