@@ -39,7 +39,7 @@ resource "aws_instance" "efs-instance" {
     ]
 
   tags = {
-    Name = "instance"
+    Name = "efs-instance"
   }
 }
 
