@@ -13,7 +13,7 @@ resource "aws_key_pair" "my_key" {
 resource "aws_security_group" "internet-access" {
   name        = "internet-access"
   description = "Security group to allow SSH access"
-  vpc_id      = "vpc-0bb5af86ff040957f"  # Replace with your existing VPC ID
+  vpc_id      = aws_vpc.vpc1.id  # Replace with your existing VPC ID
 
   # Allow SSH access from anywhere (port 22)
   ingress {
