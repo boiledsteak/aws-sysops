@@ -2,7 +2,7 @@
 resource "aws_security_group" "efs_sg" {
   name        = "efs-security-group"
   description = "Security group for EFS and SSH"
-  vpc_id      = aws_vpc.vpc1.id
+  vpc_id      = "vpc-0bb5af86ff040957f"
 
   # Allow all outbound traffic
   egress {
