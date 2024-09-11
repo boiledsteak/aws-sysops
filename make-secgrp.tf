@@ -1,7 +1,7 @@
 resource "aws_security_group" "webaccess" {
   name        = "webaccess"
   description = "Security group to allow SSH access and all outbound traffic"
-  vpc_id      = "vpc-0bb5af86ff040957f"  # Reference your VPC
+  vpc_id      = aws_vpc.vpc1.id  # Reference your VPC
 
   # Inbound Rule: Allow SSH access (port 22)
   ingress {

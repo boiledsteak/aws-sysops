@@ -1,15 +1,3 @@
-# Get the existing instance
-data "aws_instance" "my_instance" {
-  instance_id = "i-06cd9cf1868e19c51"  # Replace with your instance ID
-}
-
-# Modify security groups for the existing instance
-resource "aws_instance_security_group_association" "associate_sg" {
-  instance_id       = data.aws_instance.my_instance.id
-  security_group_id = aws_security_group.efs_sg.id
-}
-
-
 # Create a security group for EFS
 resource "aws_security_group" "efs_sg" {
   name        = "efs-security-group"
@@ -45,4 +33,11 @@ resource "aws_security_group" "efs_sg" {
   tags = {
     Name = "efs-sg"
   }
+}
+
+
+# attach ENI of myinstance to the security group for EFS  
+resource "aws_network_interface_sg_attachment" "sg_attachment" {
+  security_group_id    = aws_security_group.efs_sg.id
+  network_interface_id = "eni-06c4e0f34715cad95"
 }
