@@ -225,6 +225,9 @@ network ACL is stateless firewall
 ec2 host: the bare metal server running ec2
 
 
+to attach instance to security group, add the security group under the instance definition
+
+
 different kinds of ip addr, an ec2 instance can have
 1. public ip
 - standard internet ip
