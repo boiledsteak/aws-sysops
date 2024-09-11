@@ -37,3 +37,8 @@ resource "aws_security_group_rule" "ssh_ingress" {
   security_group_id = aws_security_group.efs_sg.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
+
+
+
+
+

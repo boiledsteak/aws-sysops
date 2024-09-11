@@ -57,7 +57,10 @@ resource "aws_instance" "myinstance" {
   key_name = aws_key_pair.my_key.key_name
 
   # Attach the security group for SSH access
-  vpc_security_group_ids = [aws_security_group.internet-access.id]
+  vpc_security_group_ids = [
+    aws_security_group.internet-access.id,
+    aws_security_group.efs_sg.id
+    ]
 
   tags = {
     Name = "myinstance"
