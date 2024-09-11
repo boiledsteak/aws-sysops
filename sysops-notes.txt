@@ -319,3 +319,155 @@ sudo mount /dev/xvdf /data
 //Make the volume mount persistent
 sudo nano /etc/fstab 
 	== then add '/dev/xvdf /data ext4 defaults,nofail 0 2' and save the file
+
+
+
+stopped instances (basically shutdown but dont delete instance)
+- only for EBS backed instances
+- EBS volume is chargeable
+- instance is not chargeable
+- data in RAM is lost
+- instance will run on different host when start again
+- private IPs retain but public change
+
+
+
+hibernating instances (a bit like vmware paused)
+- only for on-demand or reserved linux instances
+- contents of RAM saved to EBS volume
+- must enable hibernation before it is launched
+
+
+rebooting instances
+- does not affect billing
+- DNS name, IPv4, IPv6 addr retained
+
+
+retiring instances
+- performed by AWS
+- scheduled retirement date
+- might be done early if host has irreparable failure
+
+
+terminating instances
+- EBS volume also deleted by default (can change)
+
+
+recovering instances
+- cloudwatch can be used to monitor instance status and repair
+- occurs when host needs repair
+- restore back to original state
+
+
+
+Nitro:
+- high performance hypervisor
+- focused on performance, security, and innovation
+- have specialised hardware ie
+	= nitro VPC
+	= nitro EBS
+	= nitro instance storage
+	= nitro security chip
+- close to bare metal performance even with hypervisor
+- ENA and EFA are based on nitro
+- network can reach 100Gbps
+- high performance compute
+
+
+
+nitro enclave
+- isolated hardened VM
+- no persistant volume, interactive access, or external networking
+- only authorised code can run. performs check
+- integrates with key management service (KMS) for encryption
+- good for protecting and processing sensitive data ie
+	= personal data
+	= healthcare
+	= financial
+
+
+event-driven architecture
+1. user upload a file to static website, stored in S3
+2. lambda function process file and store in S3
+
+
+with serverless (lambda),
+- no instances to manage
+- no provision of hardware
+- no provision of OS or software
+- auto scaling
+
+
+lambda charge you on compute time
+
+
+SQS queue decoupling (Simple Queue Service)
+- when the network layer receives high traffic, the high traffic needs to be sent to the app
+- but problem is sometimes traffic so high that auto scaling kicks in and there is a short delay before network layer can send to app
+- failure occurs when network layer cannot keep up with app
+- so put a "proxy" to hold traffic
+- this is achieved with SQS queue
+- network layer and app do not talk to each other directly
+- both talk to SQS queue
+
+
+
+SNS decoupling (Simple Notification Service)
+- event producer (publisher) sends message to SNS topic
+- each subscriber to the SNS topic will receive the message in its native protocol ie text message will get SMS while web app get HTTP
+
+
+file storage vs object storage
+- file storage (EFS)
+	= data stored in directories
+	= nested directories
+	= mounts to an OS
+
+- object storage (S3)
+	= stored in buckets
+	= flat architecture. no nests
+	= REST api
+
+
+
+Elastic file system (EFS)
+- can create EFS on vpc and attach instances from different AZ to the EFS
+- can simultaneously connect many instances
+- only for linux instances since using NFS
+- if want to connect instances from other VPC, need to use peering
+- can VPN to on prem clients
+- can use IAM to authenticate access
+
+
+FSx for windows
+- similar to EFS but for windows
+- can use AD to authenticate
+- can VPN to on prem clients
+
+FSx for Lustre
+- high performance version
+- works with S3 too
+- S3 buckets are presented as files
+- designed for
+	= ML
+	= video processing
+- can VPN to on prem clients
+
+
+
+Simple storage service (S3)
+- bucket names must be unique globaly
+- can define buckets per region
+- unlimited storage
+- can be any file type
+- key:value style but no hierachy
+- can create folders. they can nest
+- buckets cannot nest
+- bucket contents:
+	= key
+	= version ID
+	= value
+	= subresources
+	= access control info
+
+
