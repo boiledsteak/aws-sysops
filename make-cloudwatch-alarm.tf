@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "memory_usage_alarm" {
   metric_name               = "mem-usage-test"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
-  period                    = 15  # 15 seconds
+  period                    = 10  # 15 seconds
   threshold                 = 39
   statistic                 = "Average"
   unit                      = "Percent"
