@@ -56,6 +56,9 @@ resource "aws_instance" "myinstance" {
   # Use the key pair created above for SSH access
   key_name = aws_key_pair.my_key.key_name
 
+  # add instance profile
+  iam_instance_profile = "cloudwatcher-instance-profile"
+
   # Attach the security group for SSH access
   vpc_security_group_ids = [
     aws_security_group.internet-access.id,

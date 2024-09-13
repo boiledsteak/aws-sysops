@@ -572,3 +572,66 @@ ElastiCache
 		> no data partitioning
 
 
+
+
+cloudwatch
+- aws observability
+- automate responses to certain changes
+- can source from both aws and on prem
+
+	cloudwatch metrics
+		> numerical data
+		> to get system level metrics such as CPU and RAM usage, need to attach a cloudwatch agent to EC2 instance
+		> can set custom metrics outside of aws, to cloudwatch
+		> metrics exist within a region
+		> all metrics must belong to a namespace
+
+	cloudwatch alarms
+		> monitor metrics and initiate actions
+		> 2 types of alarms
+			metric alarm: perform some actions based on one metric
+			composite alarm: several alarms together, managed by rules
+		> metric alarm states:
+			OK - below threshold
+			ALARM - above threshold
+			INSUFFICIENT_DATA 
+
+		> can work with EC2 auto scaling to define a threshold when to add more instances
+
+	cloudwatch logs
+		> system and app logs
+
+	cloudwatch events (replaced by event bridge)
+		> stream of system events. can trigger actions too
+
+
+	cloudwatch dimensions
+		> a dimension is a name:value pair that is part of the identity of a metric
+		> can assign multiple dimensions to a metric
+		> similar to namespace but dimensions are used to categorise the metric
+
+	cloudwatch statistics
+		> aggregation of metric data over a period of time
+
+
+	cloudwatch API actions (in exam)
+	= GetMetricData
+		+ retrieve up to 500 metrics in a single request
+
+	= PutMetricData
+		+ publish metric data to cloudwatch
+		+ used for custom metrics
+
+	= GetMetricStatistics
+		+ get stats for specific metric
+		+ max number of datapoints returned is 1440
+
+
+
+
+
+
+to create an instance profile
+1. create a role
+2. associate role with instance profile
+3. associate instance profile with ec2 instance
