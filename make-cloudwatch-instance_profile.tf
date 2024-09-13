@@ -28,6 +28,11 @@ resource "aws_iam_role_policy_attachment" "ec2_full_access" {
   role     = aws_iam_role.cloudwatcher.name
 }
 
+# Attach AmazonSSMFullAccess to the Role
+resource "aws_iam_role_policy_attachment" "ssm_full_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+  role     = aws_iam_role.cloudwatcher.name
+}
 
 # Create IAM Instance Profile
 resource "aws_iam_instance_profile" "cloudwatcher_profile" {

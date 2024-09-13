@@ -635,3 +635,12 @@ to create an instance profile
 1. create a role
 2. associate role with instance profile
 3. associate instance profile with ec2 instance
+
+
+
+
+cloudwatch agent
+- collect metrics and logs from EC2 instances and on-prem
+- instead of manually using "free" command in amazon linux to output system memory usage, 
+can use cloudwatch agent to natively draw system metrics such as
+cpu usage, cpu time, memory etc
