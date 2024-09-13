@@ -27,3 +27,10 @@ resource "aws_iam_role_policy_attachment" "ec2_full_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
   role     = aws_iam_role.cloudwatcher.name
 }
+
+
+# Create IAM Instance Profile
+resource "aws_iam_instance_profile" "cloudwatcher_profile" {
+  name = "cloudwatcher-instance-profile"
+  role = aws_iam_role.cloudwatcher.name
+}
