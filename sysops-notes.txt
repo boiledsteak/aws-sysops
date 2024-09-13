@@ -600,6 +600,14 @@ cloudwatch
 
 	cloudwatch logs
 		> system and app logs
+		> by default, logs are not expired. can set retention policy
+		> can be encyrpted with KMS
+		> types of log objects
+			log events: activity
+			log streams: a sequence of log events that share the same source
+			log groups: a group of log streams that share the same settings ie access control, retention
+		> metric filters can be created to convert logs to metrics
+			(ie logs show a lot of 404 and 200 HTTP status. use metric filter for 404 to see 404 count graph )
 
 	cloudwatch events (replaced by event bridge)
 		> stream of system events. can trigger actions too
@@ -644,3 +652,5 @@ cloudwatch agent
 - instead of manually using "free" command in amazon linux to output system memory usage, 
 can use cloudwatch agent to natively draw system metrics such as
 cpu usage, cpu time, memory etc
+
+
