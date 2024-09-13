@@ -1,4 +1,4 @@
-# Create IAM Role
+# Update IAM Role Trust Policy
 resource "aws_iam_role" "cloudwatcher" {
   name = "cloudwatcher"
 
@@ -12,9 +12,17 @@ resource "aws_iam_role" "cloudwatcher" {
           Service = "ec2.amazonaws.com",
         },
       },
+      {
+        Action    = "sts:AssumeRole",
+        Effect    = "Allow",
+        Principal = {
+          Service = "cloudformation.amazonaws.com",
+        },
+      },
     ],
   })
 }
+
 
 # Attach CloudWatchAgentAdminPolicy to the Role
 resource "aws_iam_role_policy_attachment" "cloudwatch_agent_policy" {
