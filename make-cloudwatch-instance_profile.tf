@@ -23,6 +23,12 @@ resource "aws_iam_role" "cloudwatcher" {
   })
 }
 
+# Attach AWSQuickSetupDeploymentRolePolicy to the Role
+resource "aws_iam_role_policy_attachment" "quicksetup_deployment_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSQuickSetupDeploymentRolePolicy"
+  role     = aws_iam_role.cloudwatcher.name
+}
+
 
 # Attach AWSCloudFormationFullAccess to the Role
 resource "aws_iam_role_policy_attachment" "cloudformation_full_access" {
