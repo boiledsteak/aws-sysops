@@ -473,4 +473,102 @@ Simple storage service (S3)
 	= subresources
 	= access control info
 
+=================================
+mount EFS to EC2 instance
+
+from within an ec2 instance
+
+0. mkdir ~/efs-mount-point
+1. Install EFS utils sudo yum install -y amazon-efs-utils
+2. Mount using the EFS mount helper sudo mount -t efs -o tls fs-0449ea760b768b5b4.efs.ap-southeast-1.amazonaws.com:/ ~/efs-mount-point
+
+
+=================================
+
+
+
+S3 data can also be encrypted at rest
+
+
+accessing S3 buckets
+1. use AWS API
+	- dont make sense for web app
+
+2. set up API gateway, and lambda function to process API requests
+	- mongo atlas has a built in API gateway that can process API calls natively
+	- S3 does not have native API gateway so must set up
+		= first need to create a role for the lmabda function, that only has S3 access (doesn't need IAM auth because lambda is within AWS)
+		= create API gateway that requires IAM authentication 
+			( can use IAM role, but an IAM user has to supply credentials to this role )
+		= create lambda function to take API call, and return the specified S3 object
+
+
+
+
+Relational database service (RDS)
+- SQL
+- typically used to store transactions ie purchases from online store
+- data can be encrypted at rest
+- encryption uses key management service (KMS)
+- uses several DB types
+	= aurora
+	= MySQL
+	= oracle
+	= MS SQL
+	Aurora
+	- SQL db created by aws
+	- the native DB used by RDS
+	- supposedly faster than MySQL and postgre
+
+- RDS DB lives within a VPC too
+- RDS DB can be given public ip
+- security groups can be attached to RDS DB
+- can also enable TLS for RDS DB encryption
+- RDS DB data can also be encrypted at rest
+- KMS is used to manage the encryption
+- read replica will always have same encryption status as object in RDS DB
+- KMS key must be from same region as RDS DB
+- cannot restore an unencrypted backup or snapshot to an encrypted RDS DB
+
+
+
+DynamoDB
+- noSQL 
+
+
+
+ElastiCache
+- good for static data thats frequently accessed
+- key/value store
+- runs on EC2 instances
+- high performance low latency
+- can be used as a cache for RDS
+- got different types of objects within elasticache
+	= memcached
+		> no data persistence
+		> simple data type
+		> no encryption
+		> multi-threaded
+		> no backups or snapshots
+		> no replica
+		> have data partitioning
+
+	= Redis with cluster mode
+		> have data persistance
+		> complex data type
+		> have encryption
+		> have replica
+		> not muli-threaded
+		> automatic backup and manual snapshot
+		> have data partitioning
+
+	= Redis with NO cluster mode
+		> have data persistance
+		> complex data type
+		> have encryption
+		> have replica
+		> not muli-threaded
+		> automatic backup and manual snapshot
+		> no data partitioning
+
 
