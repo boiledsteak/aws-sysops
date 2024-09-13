@@ -24,6 +24,12 @@ resource "aws_iam_role" "cloudwatcher" {
 }
 
 
+# Attach AWSCloudFormationFullAccess to the Role
+resource "aws_iam_role_policy_attachment" "cloudformation_full_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"
+  role     = aws_iam_role.cloudwatcher.name
+}
+
 # Attach CloudWatchAgentAdminPolicy to the Role
 resource "aws_iam_role_policy_attachment" "cloudwatch_agent_policy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy"
