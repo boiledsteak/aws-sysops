@@ -687,3 +687,124 @@ CloudTrail
 		-> DynamoDB calls
 	= Insights Events
 		-> identify and respond to sus API calls. Monitors Management events
+
+
+
+EventBridge (previously known as Cloudwatch Events)
+
+- Event sources:
+	= AWS services
+	= custom apps
+
+- event sources send data to event bus
+- event bus send data to targets, according to rules
+
+
+
+AWS config
+- define rules as to how the infrastructure should be like
+- ie must have 2x ec2 instance and 1x RDS
+- if dont have such infra, AWS config can alert SNS,
+or send to event bridge to perform something through lambda
+- or use systems manager automation to perform remediation
+
+
+
+Systems Manager
+- manage EC2 instances, applications, and even VMs from other cloud providers, and self hosted VMs
+- must install the SSM agent
+- need IAM role attached to the SSM agent
+- all actions can be recorded by CloudTrail
+
+
+	systems manager automation
+	- YAML IAC config files
+	- a bit like terraform
+	- can automatically perform remediation, and not just alert
+
+	systems manager run command
+	- same YAML IAC config file, but instead of running an operation, run a command
+
+	systems manager inventory
+	- an inventory of all managed services
+	- dashboard
+
+	systems manager patch manager
+	- patch baselines with rules
+	- patch EC2 instances and on prem VMs
+	- set patch time
+
+	systems manager compliance
+	- scan instances for patch / config compliance
+	- can aggregate data from multiple AWS accounts and regions
+	- can create custom compliance rules for own custom objects, and not just EC2 instance OS update
+
+	systems manager session manager
+	- remotely interact instances without SSH, or logging in to them
+	- can store session logs in S3, and output to CloudWatch Logs
+	- don't need to open port for ssh
+
+	systems manager parameter store
+	- secret storage
+	- key:value
+	- no auto rotation of keys (secrets manager does)
+
+
+Personal Health Dashboard
+- provide personalised proactive alerts and remediation advice when AWS has events that impact the user
+- ie AWS scheduled maintenance
+
+
+Service Health Dashboard
+- status of all services
+- even services the user doesn't use
+- no proactive notification of scheduled activties
+
+
+Auto scaling
+- EC2 instances, EC2 spot fleets, DynamoDB, Aurora
+- works with CloudWatch
+- horizontal scaling
+- launch and terminate instances dynamically
+- scale based on time or performance
+- auto scaling group: just a group of objects that share the same auto scaling settings (ASG)
+- Health Checks
+	EC2 status checks
+	ELB + EC2 status checks
+- Health Check grace period: how long to wait before checking health status
+- ASG can cover sevceral AZs or subnets
+- ASG require a launch template
+
+- types of auto scaling
+	Dynamic: automatically scale based on demand
+	Predictive: uses AIML to predict
+	Scheduled: based on time
+- types of auto scaling policy
+	= Target tracking scaling
+		-> scale based on current CloudWatch metrics values
+	= Step scaling
+		-> scale in steps, based on severity of the alarm
+	= Simple Scaling
+		-> scale based on a single static source
+		-> Cooldown: used with simple scaling policy to add buffer time before scaling occurs. Default is 5mins
+	= Termination policy
+		-> set which instance to terminate first when scaling occurs
+	= Termination protection policy
+		-> set which instance NOT to terminate regardless of scaling
+
+- auto scaling settings
+	= lifecycle hooks
+		-> perform some actions as instances are scaled
+
+
+Elastic Load Balancing (ELB)
+- can cover several AZ
+- Application load balancer 
+	= request level of OSI model (layer7)
+	= HTTP, HTTPS
+	= good with docker and lambda targets
+- Network load balancer
+	= connection level of OSI model (layer4)
+	= TCP, UDP
+	= higher performance
+	= 
