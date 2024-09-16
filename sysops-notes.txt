@@ -153,7 +153,7 @@ each VPC has its own CIDR block; aka its own local private subnet
 
 S3 is outside VPC because its a public service
 S3 is like google drive. It does not have querying like mongo or sql
-
+S3 bucket names must be unique around the world, even other aws accounts
 
 
 VPC endpoint is used to access AWS services that are public ie S3, through a private connection (doesnt touch internet)

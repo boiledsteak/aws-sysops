@@ -1,4 +1,3 @@
-# Create S3 bucket for CloudTrail logs
 # Create S3 bucket for CloudTrail logs with a unique name
 resource "aws_s3_bucket" "cloudtrail_bucket" {
   bucket = "my-cloudtrail-logs-bucket-${random_string.suffix.result}"
@@ -15,11 +14,6 @@ resource "random_string" "suffix" {
   special = false
 }
 
-# Set S3 bucket ACL (to private) using aws_s3_bucket_acl resource
-resource "aws_s3_bucket_acl" "cloudtrail_bucket_acl" {
-  bucket = aws_s3_bucket.cloudtrail_bucket.id
-  acl    = "private"
-}
 
 # Enable CloudTrail
 resource "aws_cloudtrail" "cloudtrail" {
