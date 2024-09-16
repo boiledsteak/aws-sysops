@@ -807,4 +807,11 @@ Elastic Load Balancing (ELB)
 	= connection level of OSI model (layer4)
 	= TCP, UDP
 	= higher performance
-	= 
+
+
+storing session state
+option1: store session data in dynamoDB so when user is redirected to another instance while logged in to the web app, no need to sign in again
+
+option2: elasticache
+
+option3: cookies (locally stored on client side). used with sticky sessions
