@@ -7,7 +7,7 @@ resource "aws_launch_template" "my_launch_template" {
   instance_type = "t2.micro"  # Free-tier eligible
 
   # Security group for the instance (sg-08c3a7cd7e0700daa)
-  vpc_security_group_ids = ["sg-08c3a7cd7e0700daa"]
+  vpc_security_group_ids = ["sg-0caa8f2bbf96317c0"]
 
   # No SSH access - so no key pair
   disable_api_termination = false
