@@ -412,12 +412,24 @@ SQS queue decoupling (Simple Queue Service)
 - this is achieved with SQS queue
 - network layer and app do not talk to each other directly
 - both talk to SQS queue
-
+- PULL BASED
 
 
 SNS decoupling (Simple Notification Service)
 - event producer (publisher) sends message to SNS topic
 - each subscriber to the SNS topic will receive the message in its native protocol ie text message will get SMS while web app get HTTP
+- PUSHED BASED
+- many-to-many messaging
+- possible endpoints
+	= SQS queue
+	= lambda functions
+	= SMS
+	= webhooks
+	= email
+>> SNS + SQS fan out architecture
+	-> one SNS topic has several SQS queues subscribed
+	-> the SNS topic sends the same message to all SQS queues, but each SQS queue performs a different logic on the same message
+
 
 
 file storage vs object storage
@@ -654,3 +666,24 @@ can use cloudwatch agent to natively draw system metrics such as
 cpu usage, cpu time, memory etc
 
 
+
+
+CloudTrail
+- logs API activity. not performanced oriented. audit focused
+- CloudTrail Trail can be limited to one region or all
+- CloudTrail Trail logs any events to S3 indefinitely
+- CloudTrail can trigger CloudWatch Events
+- CloudTrail logs API activity for 90 days by default
+- CloudTrail logs can trigger notification by subscribing to SNS topic
+- types of CloudTrail Events
+	= Management Events
+		-> info on management operations performed on resources in an AWS account
+		-> ie. Creating S3 bucket, creating IAM principals
+		-> creating route table rules
+	= Data Events
+		-> info on RESOURCE operations performed on resources
+		-> ie. S3 API calls such as GetObject, DeleteObject
+		-> Lamba function calls
+		-> DynamoDB calls
+	= Insights Events
+		-> identify and respond to sus API calls. Monitors Management events
