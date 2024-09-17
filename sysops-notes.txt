@@ -815,3 +815,103 @@ option1: store session data in dynamoDB so when user is redirected to another in
 option2: elasticache
 
 option3: cookies (locally stored on client side). used with sticky sessions
+
+
+RDS automated backups
+- set backup window
+- when backup occurs, snapshot of the DB is sent to S3
+- transaction logs are also sent every 5 mins
+- if want to restore a backup, a new DB instance is created
+- can replicate backups to other regions
+- brief suspension of I/O during snapshot taking
+
+RDS manual backups
+- snapshot don't expire
+- brief suspension of I/O during snapshot taking
+
+
+RDS maintenance window
+- by default weekly
+
+
+Aurora backups
+- default backup retention period is 1 day
+- cannot disable automated backups
+- can use AWS Backup to manage backups of Aurora clusters
+- manual snapshots do not expire
+- can copy snapshots across regions
+ 
+
+RDS disaster recovery (DR)
+- RDS Primary: the main db
+- RDS Standby: a replica of the primary db in another AZ (synchronous replication)
+- RDS Read Replica: offload read queries to a replica (asynchronous replication). Used when read traffic high
+
+
+RDS Fault Tolerance and Replicas
+- Fault Tolerance works across 3 AZs
+- 1 Primary in 1 AZ, and the other 2 AZs have replicas. But only one single logical volume
+- Replica only take in read requests. Write requests are handled by Primary
+- Can promote Replica to a Primary. Can use auto-scaling to horizontally scale more replicas
+- Replicas are within a region
+- if want to perform cross region replication, need to use Aurora MySQL (asynchronous)
+
+
+Aurora Global Database
+- cross region replication without using MySQL
+- uses Aurora storage layer
+- better performance
+
+
+Aurora Multi-Master
+- many Primary DB. Only for MySQL
+- Single region only
+
+
+Aurora Serverless
+- DB scales automatically based on usage
+- Aurora Capacity Unit (ACU), the PC running the Aurora db
+- can set how many ACU to use
+- good when unsure of the db use case, so don't want to set in stone the db architecture yet
+
+
+Route 53
+- DNS service
+	= can have public and private DNS
+- Domain registration
+- Health check of EC2 instances
+- Hosted Zones
+	= group of domains and subdomain
+	= can associate a Hosted Zone to a VPC
+- can migrate from other DNS to Route 53
+- can migrate a Hosted Zone to another AWS account
+- can associate a Hosted Zone with a VPC from another AWS account
+- Routing Policy:
+	= Simple
+		-> basic DNS
+
+	= Weighted
+		-> one domain may have multiple IPs (several regions to serve the website)
+		-> set weights so that ie 60% traffic goes to region 1, 40% traffic goes to region 2
+
+	= Latency
+		-> region with lowest latency will respond to DNS query
+
+	= Failover
+		-> Set health check on primary Route 53 Hosted Zone
+		-> if fail, route to secondary
+
+	= Geolocation
+		-> Set specific region regardless of latency
+
+	= MultiValue
+		-> one domain may have multiple IPs (several regions to serve the website)
+		-> Randomly pick which Hosted Zone to serve the DNS query
+
+	= IP based
+		-> route basedo on subnet and CIDR
+
+
+
+
+
