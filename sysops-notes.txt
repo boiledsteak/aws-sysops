@@ -278,6 +278,8 @@ types of storage for ec2 instances
 - c drive on an ec2 instance could be stored on an ebs elsewhere, connected over network
 - means same persistant storage can be used on different instance since ebs is separated
 - ebs exist only within AZ
+- can create EBS snapshots just like VMware. Incremental snapshots. Can create an AMI from a snapshot
+- can start a new instance in another AZ that's using a snapshot (not EBS volume) that was created in another AZ
 
 2. instance store
 - not over network
@@ -910,6 +912,162 @@ Route 53
 
 	= IP based
 		-> route basedo on subnet and CIDR
+		
+
+
+
+Recovery Point Objective (RPO)
+- measurement of the amount of data that can be lost
+- measured in seconds minutes or hours
+- 2hr RPO means must back up every 2hours
+- to achieve milliseconds of RPO, use synchronous replication (1-60ms)
+- to achieve seconds of RPO, use asynchronous replication (1-60s)
+- to achieve minutes of RPO, use snapshots, S3 backups (1-60mins)
+- to achieve hours of RPO, use on prem off site backups (1- ~ hours)
+
+
+Recovery Time Objective (RTO)
+- measurement of time it takes to restore
+- measured in seconds minutes or hours
+- to achieve milliseconds of RTO, use fault tolerance
+- to achieve seconds of RTO, use load balancer, auto scaling
+- to achieve minutes of RTO, use cloud cross site recovery
+- to achieve hours of RTO, use on prem recovery
+
+
+Disaster Recovery strategies (DR)
+
+- backup and restore
+	= low priority workloads
+	= EBS snapshots, copy of file systems
+	= copies of data
+	= low cost
+
+- Pilot Light
+	= data is replicated
+	= redundant instances
+	= services may be idle
+	= medium cost
+
+- Warm Standby
+	= business critical workloads
+	= nodes always running
+	= horizontal/vertical scaling
+	= high cost
+
+- Multi Site
+	= data across multiple datacenters
+	= data across regions
+	= zero downtime
+	= zero data loss
+	= highest cost
+
+
+
+
+AWS Backup
+- automated data protection service
+- centralised backup management for
+	= EC2, EBS, EFS, DynamoDB, RDS
+- Policy based
+- Encrypted with KMS
+- ransomware protectection
+
+
+Data Lifecycle Manager (DLM)
+- automates the management of EBS snapshots and EBS-backed AMIs
+- create, retain, delete
+- reduce cost by automatically delete old snapshots
+
+
+
+
+Durability
+- protect against data loss
+- protect against data corruption
+- S3 offers 11x 9 durability
+
+
+
+Availability
+- amount of time data is accessible
+
+
+S3 Storage classes
+> all guarantee 9x 11 durability
+
+[top is most expensive, lowest latency, good for frequent access]
+
+- S3 standard
+
+- S3 intelligent Tiering
+
+- S3 Standard IA (infrequent access)
+
+- S3 One Zone IA
+
+- S3 Glacier IR (instant retrieval)
+
+- S3 Glacier FR
+
+- S3 Clacier Deep Archive
+
+
+S3 Replication
+- Same-Region Replication (SSR): make a replica bucket within the same region
+
+
+S3 Encryption
+- can use S3 managed keys
+- can also use KMS
+- data is encrypted at risk. Decrypted when retrieved
+
+
+
+S3 lifecycle management
+
+two types of actions
+- transition actions
+	-> when objects move to another S3 storage class
+
+- expiration actions
+	-> when objects expire
+
+
+
+CloudFormation
+- basically terraform on AWS
+- components
+	= Templates
+		-> the files themselves. can be YAML or JSON
+		-> Intrinsic functions (built in fn in Templates)
+			+ Ref
+				return ID or Name
+			+ :GetAtt
+				return ARN or IP adr
+			+ :FindInMap
+				return value within a key:pair mapping
+			+ AWS::Serverless
+				specified which version of AWS serverless application model (SAM) to use
+			+ AWS::Include
+				reference code from another YAML
+
+		-> mappings can use region name as key
+
+	= Stacks
+		->  the environment described by the template
+		- > rollback upon failure is default 
+
+	= StackSets
+		-> manage stack that spans across multiple accounts and regions
+
+	= Nested Stacks
+		-> a "helper function" that a stack can reference
+		-> Like a standard template for info that is repeated
+
+	= Change Sets
+		-> summary of proposed changes to verify before they apply
+
 
 
 
