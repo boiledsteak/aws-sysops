@@ -295,6 +295,8 @@ amazon machine image (AMI)
 - basically the OS image that the EC2 instance will use
 - has an EBS snapshot linked to it (persistent storage)
 - can predefine the image just like docker
+- can make your AMI publicly available or private
+- cannot delete AMI snapshot while an instance is still running, using that AMI snapshot
 
 stopping and starting an instance will mean that the physical storage used in baremetal is different each time
 
@@ -700,6 +702,8 @@ EventBridge (previously known as Cloudwatch Events)
 
 - event sources send data to event bus
 - event bus send data to targets, according to rules
+- can set a schedule to perform a lambda function
+	= ie. tmr at 2pm run this function
 
 
 
@@ -1038,6 +1042,7 @@ two types of actions
 CloudFormation
 - basically terraform on AWS
 - components
+** basically template is the blueprint of a house while stack is the house
 	= Templates
 		-> the files themselves. can be YAML or JSON
 		-> Intrinsic functions (built in fn in Templates)
@@ -1056,7 +1061,7 @@ CloudFormation
 
 	= Stacks
 		->  the environment described by the template
-		- > rollback upon failure is default 
+		->  rollback upon failure is default
 
 	= StackSets
 		-> manage stack that spans across multiple accounts and regions
@@ -1070,6 +1075,198 @@ CloudFormation
 
 
 
+CloudFormation Helper Scripts
+
+cf-init
+AWS::CloudFormation::Init
+- can define what packages to install as EC2 instance is initialised
+- can define what files to be created
+- can define what services to enable
+- kinda replaces AMI
+- logs to /var/log/cfn-init.log
+
+cfn-signal
+- signal the status of EC2 instance creation
+- can set the pipeline to wait until all instances are ready before proceding
+- used with CloudFormation CreationPolicy
+
+***in exam
+	-> check if the scripts are included
+	-> check if the commands have run successfully
 
 
+
+CloudFormation CreationPolicy
+- used with both CloudFormation Helper Scripts
+- CreationPolicy is the policy defined in cloudformation file, to indicate wait for instance initialisation
+- cfn-signal is the command run within an instance to send the signal to the cloudformation server
+
+- supported resource types that CreationPolicy can be associated to,
+	= AutoScalingGroup
+	= Instance
+	= WaitCondition
+
+CloudFormation DeletionPolicy
+- backup a resource when its stack is deleted
+- all resources are deleted by default
+- 3 parameters can be set. Either one
+	= Retain
+	= Snapshot
+	= Delete
+
+CloudFormation DependsOn
+- specify that the creation of a resource follows another
+- when a DepndsOn attirbute is added to a resource, that resource is only created AFTER the creation of the resource specified in the DependsOn Attibute
+- if Resource A depends on Resource B, B must be created first
+
+CloudFormation WaitCondition
+- a bit like if statement. if xxx is performed then the resource can be created
+
+
+CloudFormation UpdatePolicy
+- specified update settings for
+	= AWS::AutoScaling::ASG
+	= AWS::ElastiCache::ReplicationGroup
+	= AWS::Elasticsearch::Domain
+	= AWS::Lambda::Alias
+- can be used to enable rolling updates
+- 
+
+CloudFormation UpdateReplacePolicy
+- retain or backup the existing physical instance of a resource when it is being updated
+
+
+
+CloudFormation Rollback
+- by default, everything will be deleted upon failure
+- is applied to a whole stack
+- OnFailure options:
+	= DO_NOTHING
+	= ROLLBACK
+		- go back to previous state
+	= DELETE
+		- delete entire stack
+
+CloudFormation UPDATE_ROLLBACK_FAILED
+- stack update failure
+- defualt rollback
+- cannot update a stack while in this state
+- it needs to go back to original state then can update
+
+
+
+Resource Access Manager (RAM)
+- share resources across AWS accounts, but within AWS organisations
+- share between IAM roles and users
+- can clickops, CLI, or API
+
+
+Elastic Beanstalk
+- automatically create web app environments
+- PaaS
+- similar to CloudFormation but specifically for web app env
+- more for management than creation
+- can launch and manage EC2 instaces, or even Docker running on ECS
+- a cloudformation stack is automatically created
+- Elastic Beanstalk environment
+	= a set of resources provided by Elastic Beanstalk for a certain version of the web app
+	= can set prod environment, and testing environment
+
+- can deploy 2 types
+	= web servers
+	= workers
+		-> web servers that specifically listen for messages from SQS then perform an action
+		-> used for long running tasks
+
+- Elastic Beanstalk process:
+	= user access website
+	= web server serves user
+	= web server sends task request to SQS queue
+	= worker polls SQS queue and waits for task request (pull based)
+
+	-> in this example, SQS enables asynchronous processing
+	-> async means user does not need to wait for service to process before moving forward
+	-> SQS ensures that the worker is never overloaded
+	-> SQS adds a layer of fault tolerance. should the worker go down, the request is still at the SQS queue so it can pick up where it left off, when the worker is back online
+
+
+
+Elastic Beanstalk update types
+- All at once
+	= deploys new app the all instances at the same time
+	= all instances go down at the same time too
+	= fastest deployment but high downtime
+
+- Rolling
+	= update existing instances one by one until done
+	= Long deployment time
+
+- immutable
+	= launch new instances with the new app inside, in a new ASG then when new ones are ready, old ones are turned off. the old and new serve traffic
+	= zero downtime
+	= higher cost
+	= long deployment
+	
+- blue green
+	= similar to immutable, but entirely new environment is created. When new instances are ready, all traffic is immediately swapped over
+
+
+Elastic Beanstalk pricing
+- it doesn't incur extra costs to use elastic beanstalk
+- it charges only for the underlying services used such as EC2, S3, ASG etc..
+
+
+
+OpsWorks
+- managed service for Chef and Puppet
+- chef and puppet are similar to ansible
+- terraform provision cloud resources while ansible ensures the current state matches the desired state (configuration management)
+
+
+
+Storage Gateway
+- a gateway for on prem services to access your AWS storage services such as S3, EBS
+- creates a virtual on prem file server for on prem access to S3
+- can use NFS or SMB
+- Cached Volume mode
+	= data stored on S3
+	= cache stored on site
+
+- Stored Volume Mode
+	= data stored on site
+	= async back up to S3 using incremental snapshots
+
+- Tape gateway: integration with backup software
+	= create virtual tapes
+
+
+Role-Based Access Control
+- link policies to IAM role
+
+
+Attribute-Based Access Control
+- IAM IC user may have tags associated with their account
+- policies associate to these tags
+
+
+
+Resource-Based IAM Policy
+- when a policy has a "Principal" key:value , means that this policy is Resource-Based
+- intead of "this role can do xxx" (identity based), is "this resource can do xxx by yyy"
+
+
+IAM policy
+- everything is denied by default
+- must give permissions
+- explicit deny will always override any allow
+- resource based rules are higher authority then identity based
+- types of policies
+	= identity based policy
+	= resourced based policy
+	= IAM permissions boundaries
+		-> set the max permissions an identity based policy can grant an IAM principal
+	= AWS Organisations service control policies (SCP)
+		-> set the max permissions for an organisation or OU
+	= session policy
+		-> used with AssumeRole API actions
 
