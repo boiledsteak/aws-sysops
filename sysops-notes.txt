@@ -1267,6 +1267,343 @@ IAM policy
 		-> set the max permissions an identity based policy can grant an IAM principal
 	= AWS Organisations service control policies (SCP)
 		-> set the max permissions for an organisation or OU
+		-> by default, SCP is blacklisting
+		-> FullAWSAcess SCP is attached to every OU and account
+		-> explicitly allows all permissions to flow down from root
+		-> explicit deny always overrides any allow
+
 	= session policy
 		-> used with AssumeRole API actions
 
+
+
+
+Organisations
+- consolidate and centrally manage multiple AWS accounts
+- create an organisation from IAM IC
+- has 2 modes
+	= all features enabled
+
+	= only consolidated billing feature
+		-> paying account ( aka management account )
+			-- can do everything
+			-- all charges from linked accounts are billed to paying account
+			-- can enable cloudTrail, and enable for all member accounts, they cannot disable
+		-> linked account ( aka member account )
+			-- cannot access resources of other accounts
+
+- root account creates organisation
+- organisational units are used to add accounts to the organisation
+- policies are applied to root account and OUs
+- service control policies (SCP)
+	= permissions for an entire OU
+	= only apply to OU and member accounts. NOT management acc
+- can use Organisations API to programatically create OUs and accounts
+	= CreateAccount -- creates member account
+
+
+Control Tower
+- an update to organisations
+- IAM IC creates control tower, then control tower creates Organisation
+- components:
+	= Landing Zone 
+		-> baseline template permissions that apply to all OUs 
+	= Guardrails
+		-> detective
+			-- used for governance and compliance
+			-- enabled by using Config Rules, Lambda Functions 
+		-> preventive
+			-- blacklist SCPs. Disallow specified API actions
+
+
+Managed AD (Active Directory)
+- runs on windows server, within AWS
+- can link with on prem AD using VPN
+- can link EC2 instances. Both Linux and Windows
+- can link Azure AD, office 365
+- some AWS services can use AD for authentication or authorisation
+- can apply GPO
+- recommended for >5000 users
+
+
+AD Connector
+- for when AD is on prem, then want to use AD to authenticate/ authorise services in AWS
+- no AD existing in AWS environment
+- rely on VPN
+- got 2 size
+	= Small: for orgs <500 users
+	= Large: for orgs <5000 users
+- can connect EC2 instances to on prem AD
+- can use on prem AD for authentication to log into aws management console
+
+
+IAM SAML 2.0 Identity Federation
+- on prem AD is the LDAP Identity Store
+- users log in to their PC with AD
+- there is a pydio app that uses S3
+- users can log in to the app using AD as well - Active Directory Federation Store (ADFS)
+- pydio gets API permission to S3 using sts:AssumeRoleWithSAML
+- sts returns temp credentials for pydio
+
+
+IAM web identity federation
+- user log in to web app using google auth or facebook auth, any Open ID connect (OIDC) compatible identity provider (idp)
+- web app gets API permissions using stsAssumeRoleWithWebIdentity
+- sts returns temp credentials for the web app
+- Cognito recommended 
+
+
+
+IAM identity center (IAM IC)
+- centralised permissions management with SSO
+- allows log in from multiple sources
+	= credentials from on prem AD
+	= credentials from Azure AD
+	= credentials for Adobe CC
+
+
+Inspector
+- security scan on EC2 instances
+- must install agent on the EC2 instances
+- can be scheduled
+- pricing based on number of assesments
+- Network Assesments
+	= scan for open ports inbound from internet
+	= can work without agent
+	= if install agent, can identify which service opened the ports
+- Host Assesments
+	= scan OS for CVE
+	= require agent
+
+Trusted Advisor
+- provides real time advice
+- cost optimisations
+- performance
+- security
+- fault tolerance
+- service limits
+
+
+Key Management Service (KMS)
+- used for encryption at rest
+- multi-tenant
+- Customer Master Keys (CMKs)
+	= have symmetric and asymmetric option
+	= symmetric CMK and private key of asymmetric CMK never leave KMS unencrypted
+	= by default, KMS creates the key material for a CMK
+	= can also import your own key material
+	= CMK can encrypt at most 4kb
+	= used to generate, encrypt/ decrypt Data Encryption Key (DEK)
+	= DEK used for encrypting larger amounts of data
+
+- AWS managed CMK
+	= created by default, by AWS for services that use KMS
+	= can view but cannot manage
+	= cannot use them directly
+	= tied to 1 AWS account
+	= required rotation every 1095 days
+
+- self managed CMK (customer managed)
+	= can view and can manage
+	= tied to 1 AWS account
+	= optional rotation every 365 days
+
+- Data Encryption Key (DEK)
+	= KMS doesn't store or manage DEK
+	= must manually manage DEK outside of KMS
+
+
+
+- custom policies are attached to keys as well
+- the custom policies determine what the key can encrypt specifically
+- IAM user or role is attached to a key
+- when KMS keys are deleted, can specify waiting period in case u suddenly realise u still need the key
+
+
+
+KMS API
+	aws kms encrypt
+	- encrypts plaintext into ciphertext using a KMS key
+	- can move encrypted data from one region to another
+
+	aws kms re-encrypt
+	- decrypt then re-encrypt
+	- used when want to change key
+
+	enable-key-rotation
+	- enable auto rotate of key material for the specified symmetric KMC key
+
+	aws kms generate-data-key
+	- creates symmetric data key
+	- returns plaintext copy of data key and encrypted copy
+
+	GenerateDataKeyPair
+	- creates asymmetric key pair
+
+
+KMS quota
+- KMS has two quotas
+	= Resource quota
+	= Request quota
+		-> actions include: Encrypt, Decrypt, GenerateDataKey
+
+- when quota has been reached, throttling occurs
+- to mitigate this
+	= can retry later
+	= increase quota
+	= use caching of data keys
+		-> useful if you reuse data keys
+		-> use many data keys
+		-> LocalCryptoMaterialCache
+
+
+
+CloudHSM
+- used for encryption at rest
+- hardware security module
+- alternative to KMS
+- runs within VPC
+- use cases
+	= offload TLS processing from web servers
+	= store certs (CA)
+	= store master key for oracle db
+- single tenant
+- customer managed durability and availability
+- customer managed root of trust
+- better 3rd party support
+
+
+
+AWS Certificate Manager (ACM)
+- store TLS X.509 certs
+- can create private CA and issue private ccerts
+- public certs signed by AWS public CA
+- can also import certificates from external issuers
+- used for encryption in transit
+
+
+Secrets Manager
+- store and auto rotate secrets without code
+- use with RDS
+- for use with other services, write manual lambda function that auto rotate secrets
+
+
+SSM Parameter Store
+- store secrets as ciphertext or plaintext
+- no native rotation of keys
+- hiearchical key storage
+
+
+Security hub
+- perform compliance scanning for
+	= Center for Internet Security (CIS)
+	= Payment Card Industry (PCI DSS)
+- alert and remediate automatically
+- can use with
+	= EventBridge
+	= Systems Manager
+	= Organisations
+
+
+
+GuardDuty
+- continuous monitoring for
+	= account compromise
+	= instance compromise
+	= malicious recon
+	= bucket compromise
+- checks these services
+	= CloudTrail Management Events
+	= CloudTrail S3 Data Events
+	= VPC Flow Logs
+	= DNS Logs
+
+
+
+**ways to connect to an EC2 instance within a private subnet
+1. access the private subnet from within the VPC's public subnet (aka bation host)
+	- connect to public subnet
+	- from public subnet, connect to private subnet
+
+2. use NAT gateway
+	- NAT gateway is attached to a public subnet
+	- all traffic to private subnet will go through the NAT gateway
+	- NAT gateway requires a public IP or EIP
+	- (same as how home router works)
+	- can deploy severak NAT gateways across multiple AZs
+
+
+
+**ways to connect on prem to AWS VPC
+
+1. VPN
+- low performance
+- quicker set up
+- succeptible to internet fluctuations
+- CloudHub VPN is a managed AWS service that acts as a single gateway for multiple on prem to connect to the same VPC
+
+2. AWS Direct Connect
+- high performance
+- longer set up
+- a literal fibre cable connected to AWS data center
+
+
+on top of these 2, can have a Transit Gateway between the VPC and on prem
+this allows you to connect on prem to multiple VPC. cross accounts also can
+
+
+can even have Direct Connect Gateway to connect on prem to several regions
+
+can use Direct Connect + VPN to encrypt traffic
+
+
+
+
+
+
+**ways to connect from VPC to VPC
+
+1. inter-region VPC peering
+- not transitive
+- poor scaling
+- private routing between VPCs
+- if want mesh, must have many direct connections between each vpc
+
+
+2. transit gateway peering
+- transitive
+- allows full mesh
+- can talk across multiple regions
+- the link is private
+
+
+3. VPN
+- the link is over the internet
+
+4. PrivateLink
+- uses Network Load Balancer (NLB)
+- uses private ip addr
+
+
+
+
+
+**ways to connect VPC A, Service to VPC B, Service
+
+Interface Endpoint
+- uses ENI
+- can use with
+	= EC2
+	= Lambda
+	= CloudWatch
+	= KMS
+
+- uses private IPs
+- higher performance
+- traffic can be encrypted
+
+
+
+Gateway Endpoint
+- only for S3 and DynamoDB
+- relies on route tables
