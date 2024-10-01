@@ -1751,7 +1751,10 @@ EC2 Spot instances
 
 
 EC2 Savings Plans
-- instead of commiting to instance over a period of time, commit to usage of services such as Lambda 
+- instead of commiting to instance over a period of time, commit to usage of services such as Lambda
+
+
+
 
 
 
@@ -1832,3 +1835,13 @@ Extra notes from Course2
 	= CPU load of instance too high
 
 
+- when to use EC2 Dedicated host?
+	= some software licenses are bound to hardware
+
+
+- EC2 reserved capacity
+	= no discounts
+	= if your on-demand instance fails and you want to try in another AZ, the capacity is reserved
+	= still pay even if don't use
+
+- 
