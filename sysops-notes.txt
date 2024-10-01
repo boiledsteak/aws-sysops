@@ -259,13 +259,14 @@ types of network interfaces
 2. elastic network adapter (ENA)
 - higher performance than ENI
 - higher bandwith and lower latency
-- only some instance support it
+- only some NEWER instance support it
 
 
 3. elastic fabric adapter (EFA)
 - even higher performance
 - usually for AIML use
-- all instance support it
+- ony linux
+- for HPC
 
 
 
@@ -1749,6 +1750,10 @@ EC2 Spot instances
 - Spot Block give less discount but give a limited amount of "guaranteed uptime"
 
 
+EC2 Savings Plans
+- instead of commiting to instance over a period of time, commit to usage of services such as Lambda 
+
+
 
 Cluster Placement Group
 - packs instances close tgt inside an AZ
@@ -1756,11 +1761,12 @@ Cluster Placement Group
 - good for HPC (high performance computing)
 - single AZ
 - multiple instance to 1 physical rack (partition) to 1 AZ
+- less fault tolerant because if one AZ fail, all instances also fail
 
 
 Partition Placement Group
 - spreads instances across logical partitions to avoid sharing underlying hardware
-- good for big data processing frameworks ie hadoop
+- good for big data processing frameworks ie hadoop, kafka, kassandra
 - increases fault tolerance
 - multiple AZs
 - multiple instance to multiple rack to multiple AZ
@@ -1791,3 +1797,38 @@ S3 Transfer Acceleration (S3TA)
 - used CloudFront nodes to upload faster
 - app uploads to CloudFront then bucket instead of direct to 
 - good for long distance transfer
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Extra notes from Course2
+
+- can only change instance type of an existing instance if it is using EBS
+
+- if instance cannot launch
+	= vCPU limit reached (default limit is 64)
+		-> try different AZ / region, request for increase limit
+		-> this limit only applies to on-demand and spot instances
+	= insufficient capacity
+		-> means AWS no capacity to launch this instance
+		-> try again later
+		-> launch a smaller instance and resize later
+		-> try different AZ / region
+
+- if instance terminates immediately after "pending",
+	= reached EBS volume limit
+	= EBS snapshot corrupt (missing files)
+	= no permissions to EBS volume required
+
+
+- if cannot connect to EC2 instance via SSH
+	= check if username for instance is correct
+	= check if SSH key has permissions
+
+
+- if connection to EC2 instance times out
+	= SG or NACL rules
+	= route table not set
+	= instance doesn't have public IP
+	= CPU load of instance too high
+
+
