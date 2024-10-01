@@ -916,7 +916,11 @@ Route 53
 
 	= IP based
 		-> route basedo on subnet and CIDR
-		
+
+
+
+
+
 
 
 
@@ -1601,9 +1605,189 @@ Interface Endpoint
 - uses private IPs
 - higher performance
 - traffic can be encrypted
-
+- uses PrivateLink
+- relies on Session Manager
+- can do cross region
 
 
 Gateway Endpoint
 - only for S3 and DynamoDB
 - relies on route tables
+- its free $ no charge
+- no cross region
+
+
+
+
+CloudFront
+- CDN
+- cache data to more servers that are geographiically closer to client
+- can lower latency for users
+- mitigates DDoS
+- can define cache policy
+- can serve S3 static website
+
+
+
+CloudFront Signed URLs
+- signed URLs are URLs that provide limited permissions and time, to perform a request
+- usually includes authentication information within it, to allow users to perform request without authentication
+- Signed URLs can specify expiration date, IP address range
+- used for access to individual files, and for users that don't support cookies
+- usually used with lambda
+
+
+CloudFront Signed Cookies
+- similar to Signed URLs
+- used for access to multiple files
+- useful when don't want to change URL
+
+
+CloudFront Origin Access Control (OAC)
+- force access to an AWS resource, to go through CloudFront
+- usually used with S3, KMS
+
+
+
+VPC Flow Logs (level 3: network)
+- logs about network traffic
+- stored in CloudWatch Logs or S3
+- can log different areas
+	= VPC
+	= subnet
+	= network interface (node level; EC2 instance level)
+- VPC flow logs vs CloudTrail
+	= VPC Flow Logs is pure network logs while CloudTrail is API activity
+
+
+ELB Access Logs (layer 4: transport & layer 7: Application)
+- info logged
+	= time
+	= client IP
+	= latency
+	= client request path (GET http:// xxx.com)
+	= server response
+- can be stored in S3
+
+
+CloudFront Access Logs (layer 4 & 7)
+- info about user requests at CloudFront CDN nodes
+- real time logs can be enabled
+- real time logs allow admin to take action based on CDN performance
+
+
+
+WAF
+- protects against SQLi and XSS
+- can block based on location, IP addr, HTTP headers etc
+- user > WAF > cloudfront
+- user > WAF > ALB > EC2
+- user > WAF > API gateway
+- can use regex too
+- WAF ACL vs Security Group
+	= WAF ACL works at application layer while SG work at network layer
+	= WAF ACL is stateless while SG is stateful
+
+
+Shield
+- managed ddos protection service
+- auto mitigation
+- minimise downtime
+- two tiers
+	= standard: free
+	= advanced: 3k usd per month
+- integrated with CloudFront
+- can work with WAF
+
+
+Compute Optimizer
+- recommends AWS services tailored to you, to reduce cost and improve performance
+- uses AIML
+- works for
+	= EC2 instances
+	= EBS volumes
+	= Lambda functions
+- can use CLI too
+
+
+Cost Allocation Tags
+- create them from billing dashboard
+- can use default tags or create your own
+- basically tag certain services so can filter to see the cost of all services with the given tag
+
+
+Cost Explorer
+- show
+	= which services are used the most
+	= which account is used the most
+	= which AZ has the most traffic
+
+Cost & Usage Report
+- publish billing reports to S3
+- reports show cost by
+	- hour 
+	- day
+	- month
+	- service
+	- tags
+- can use CLI API
+
+
+Price List API
+- query price of AWS services
+- can create alerts with SNS when prices change
+- Price List Service API : query with JSON
+- PRice List API : query with HTML
+
+
+EC2 Spot instances
+- good for stateless applications
+- 90% cheaper
+- can be terminated by AWS
+- useful for CICD, K8
+- good for fault tolerant applications
+- Spot Block give less discount but give a limited amount of "guaranteed uptime"
+
+
+
+Cluster Placement Group
+- packs instances close tgt inside an AZ
+- reduces latency
+- good for HPC (high performance computing)
+- single AZ
+- multiple instance to 1 physical rack (partition) to 1 AZ
+
+
+Partition Placement Group
+- spreads instances across logical partitions to avoid sharing underlying hardware
+- good for big data processing frameworks ie hadoop
+- increases fault tolerance
+- multiple AZs
+- multiple instance to multiple rack to multiple AZ
+- max 7 partitions per AZ
+
+
+
+Rack Spread Placement Group
+- strongest fault tolerance but also highest latency
+- instances are spread across distinct underlying hardware
+- 1 instance to multiple rack to multiple AZ
+- max 7 instances per AZ
+
+
+
+Placement group rules
+- launch 1 instance in 1 Placement Group at a time
+- cannot merge Placement Groups
+
+
+S3 Multipart Upload
+- upload objects faster
+- good for files 100Mb and larger
+- up to 5Tb
+
+
+S3 Transfer Acceleration (S3TA)
+- used CloudFront nodes to upload faster
+- app uploads to CloudFront then bucket instead of direct to 
+- good for long distance transfer
