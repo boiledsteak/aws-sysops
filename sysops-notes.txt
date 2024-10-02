@@ -341,9 +341,10 @@ stopped instances (basically shutdown but dont delete instance)
 
 
 hibernating instances (a bit like vmware paused)
-- only for on-demand or reserved linux instances
 - contents of RAM saved to EBS volume
 - must enable hibernation before it is launched
+- RAM state is preserved
+- OS is unaware it has been "paused"
 
 
 rebooting instances
@@ -1844,4 +1845,84 @@ Extra notes from Course2
 	= if your on-demand instance fails and you want to try in another AZ, the capacity is reserved
 	= still pay even if don't use
 
-- 
+- cancelling Spot Request does not terminate the spot instance
+
+- must cancel Spot Request first before terminating Spot Instance else Spot Request will bring up another Spot Instance
+
+- Spot Fleet strategies
+	= lowestPrice: pick the pool with lowest price
+	= diversified: distribute spot instance across all pools. Better availability
+	= capacityOptimised: pick pool with optimal capacity for the number of instances
+	= priceCapacityOptimised: first pick pool with optimal capacity then pick pool with lowest price (recommended way)
+
+- spot instance: reduce cost
+- spot fleet: reduce cost AND maintain availability
+
+- Burstable Instance: cheaper than normal but have Burst Credit. Good for apps with low usage
+- uses Burst Credit. Credits are consumed when spike occurs
+- when lkow usage, credits are built
+- during burst, CPU performance is high
+- when Burst Credits are exhausted, CPU utilisation is forced to throttle
+- Unlimited Burst Instance: when credits expire, customer is billed instead of throttling
+- Burst Credits cannot be bought
+
+
+- use ELB + domain name rather than elastic IP for cluster of stateless apps
+
+
+- CloudWatch Metrics vs Systems Manager
+	= Metrics show you the instance CPU usage etc while Systems Manager show you instance status etc. Systems Manager is AWS level while Metrics is OS level
+
+
+- CloudWatch Metrics doesn't include RAM
+	only
+	= CPU, Network, instance status, Disk
+
+	= if want to include RAM, must manually create custom metrics
+
+
+- if want to get metrics about individual processes, install procstat plugin on CloudWatch Agent
+
+
+- 3 types of EC2 status checks
+	= Systems status check
+		-> monitor at AWS level
+
+	= Instance status check
+		-> monitor instance OS itself
+
+	= EBS status check
+		-> EBS related. Either OS cannot reach EBS or EBS got issue at AWS side
+
+
+- AMI can do no-reboot option where the instance is not stopped when snapshot is taken
+- useful for systems with no EKS/ ASG
+- useful when need quick snapshot
+- RAM is not flushed so might be buggy
+
+
+- can merge EventBridge, Lambda, and AMI to automatically create snapshots at fixed timing
+
+- if want to migrate one instance to another AZ, use AMI
+
+- if sharing AMI with encrypted EBS, need to share the customer managed key (CMK) as well
+
+- Image Builder
+	= automate creation of AMI
+	= IAC
+	= more like ansible than terraform
+	= declarative config than provisioning
+	= GUI too
+
+
+- can set IAM policy to limit while AMI can be used by what role/user , using tags
+
+- AMI is tied to region
+
+- If want to automatically patch a cluster of instances, use Systems Manager
+
+- Systems Manager works with on prem too
+
+- Resource Group: on top of using tags, can put AWS services ie EC2, S3, into a Resource Group
+- Resource Group is a logical group limited to region
+- use tags tgt with Resource Group to apply operations to a group of objects
