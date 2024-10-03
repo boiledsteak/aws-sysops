@@ -751,6 +751,8 @@ Systems Manager
 	- remotely interact instances without SSH, or logging in to them
 	- can store session logs in S3, and output to CloudWatch Logs
 	- don't need to open port for ssh
+	- requires IAM permissions
+	- can limit what commands the role can do
 
 	systems manager parameter store
 	- secret storage
@@ -1926,3 +1928,85 @@ Extra notes from Course2
 - Resource Group: on top of using tags, can put AWS services ie EC2, S3, into a Resource Group
 - Resource Group is a logical group limited to region
 - use tags tgt with Resource Group to apply operations to a group of objects
+
+
+- SSM document is similar to dockerfile
+- SSM document doesn't need to just be for creating a container. can be Run Command that runs some commands ie install subl then apply this document on several EC2 instances
+
+- SSM Automation is like SSM Run Command but run commands automatically at set periods and can integrate API calls and other AWS services
+
+
+- SSM State Manager continuously monitor and enforce rules. So its like SSM Document Run Command but with enforcement
+
+
+- SSM Document: Directly used for one-off command executions or as building blocks for other SSM services.
+
+- SSM Automation: Used for complex, multi-step operations across AWS resources.
+
+- SSM State Manager: Used for ongoing, scheduled enforcement of configurations and policies.
+
+
+- Application Load Balancer (ALB) is good for containers and microservices
+
+- ALB can proxy in front of lambda too
+
+- ALB is not just for performance but also fault tolerance
+
+- X-Forwarded-Port means ALB was used
+
+- can limit clients to access the ALB only and not directly to the instance, using Security Group
+
+
+- Network Load Balancer (NLB) has one static IP per AZ
+- NLB can route TCP and UDP traffic
+- NLB can be used tgt with ALB
+- NLB can perform TCP and HTTP health check. The health check results determine if the load balancer will route traffic to the instance
+
+- both NLB and ALB can work with Security Group
+
+
+- Gateway Load Balancer (GWLB):
+	= designed to distribute traffic to firewall, IDS
+	= works at layer 3
+	
+- sticky sessions (aka session affinty)
+	= feature within load balancers
+	= if client 1 talks to instance 1, ALB makes sure that client 1 will stick to instance 1 for their whole convo
+	= uses cookies
+	= ensures client doesn't lose session data
+	= diminishes load balancing slightly
+
+
+- cross zone load balancing means across all AZ, all instances get equal distribution of traffic
+
+- cross zone ALB is enabled by default
+
+- cross zone NLB and GWLB is disabled by default
+
+
+- Server Name Indication (SNI)
+	= manages several TLS certs within the ALB since ALB can serve multiple clients
+
+
+- both ALB and NLB use SNI
+
+
+- connection draining (aka Derigistration Delay) :
+	= the process where an ALB waits for an ongoing conversation to stop before sending the client to another instance
+	= this ensures the user doesn't kena any interruptions
+	= this is useful for patching or bringing down "in-flight" instances
+	= basically graceful disconnect with no disruption even with ALB
+	= improves user experience
+
+
+- 4xx error code is client side
+
+- 5xx error code is server side
+
+
+- X-ray : tracing traffic that moves from one AWS service to another
+
+
+- target group: the instances that an ALB sends traffic to
+
+
