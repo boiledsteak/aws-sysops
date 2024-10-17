@@ -570,6 +570,7 @@ ElastiCache
 		> no backups or snapshots
 		> no replica
 		> have data partitioning
+		> no multi-AZ
 
 	= Redis with cluster mode
 		> have data persistance
@@ -1936,7 +1937,7 @@ Extra notes from Course2
 - SSM Automation is like SSM Run Command but run commands automatically at set periods and can integrate API calls and other AWS services
 
 
-- SSM State Manager continuously monitor and enforce rules. So its like SSM Document Run Command but with enforcement
+- SSM State Manager: continuously monitor and enforce rules. So its like SSM Document Run Command but with enforcement
 
 
 - SSM Document: Directly used for one-off command executions or as building blocks for other SSM services.
@@ -2007,6 +2008,113 @@ Extra notes from Course2
 - X-ray : tracing traffic that moves from one AWS service to another
 
 
-- target group: the instances that an ALB sends traffic to
+- target group: the instances (or services) that an ALB sends traffic to
 
 
+- Slow Start Mode:
+	= ELB target group can have slow start mode enabled
+	= some instances or services may require initialisation upon boot hence slow start gives these instances time to be in full form
+
+
+- ALB routing algorithms
+	= Least Outstanding
+		-> least busy gets the next request
+
+	= Round Robin
+		-> just keep sending in circular motion. A B C, A B C
+
+	= Flow Hash (Stickiness)
+		-> all requests are sticky. Stick all convos to one instance only
+
+
+- ALB rules:
+	= not all traffic is routed purely based on instance "busy-ness"
+	= can route based on rules such as URL parameter etc
+
+
+- ALB can be used to enable blue/green deployment
+
+
+- ASG scaling policies
+	= Dynamic Scaling
+		-> Target tracking
+			// maintain usage at xxx%
+
+		-> Step scaling
+			// when alarm is triggered, just add or remove a fixed number
+
+	= Scheduled Scaling
+		-> scale based on expected high or low traffic period
+
+	= Predictive Scaling
+		-> AIML scale
+
+
+- ASG scaling cooldown allows metrics to even out so that scaling isn't erratic
+
+
+- ASG lifecycle hooks
+	= run some commands in between instance states as they are being brought up/down by ASG
+	= ie logging, backup
+	= works with SNS, EventBridge
+
+
+- possible ASG fail to launch instance reasons
+	= ASG max capacity reached
+	= AWS max capacity
+	= spot instance unavailable
+	= security group for instance doesn't exist (may have been deleted)
+	= instance key pair deleted
+
+
+- RDS Proxy is used for pooling connections to RDS. Used when too many connections created from same source
+
+- AMI ID is region specific
+- AMI ID does not have a prefix for region ID
+- instead, create custom mapping in cloudformation
+
+
+- deleting a CloudFormation Stack will also delete all artifacts created
+
+- CloudFormation parameters require user input at runtime
+
+- use CloudFormation mappings when you know the values are fixed
+
+- CloudFormation Outputs can be cross stack. Can import value from another template (must export first)
+
+- CloudFormation Stack Policy can restrict what resources in the stack can or cannot be updated
+
+- CloudFormation can specify custom resources. Usually used with Lambda
+	Resources:
+		Custom-resource1:
+			Type: Custom::LambdaCustomThing
+
+- CloudFormation Dynamic References
+	= retrieve data from SSM parameter store or secrets manager
+
+
+- when using CloudFormation to create EC2, and want to run some commands like yum install, on instance launch, need to 
+
+
+- CloudFormation UserData
+	= a way to run commands upon start up. Similar to SSM Documents
+	= one downside is that to view logs of the UserData command, need to manually extract as opposed to SSM that can see from AWS console
+	= need to use the base64 command
+
+- if CloudFormation wait condition didn't receive the required number of signals, it could because
+	= cfn-signal command was not being run on the instance
+	= AMI doesn't have the CloudFormation helper scripts installed
+
+
+- S3 inventory can generate report about all objects' encryption status for compliance and audit
+
+- AWS Trusted Advisor alerts service limits
+
+- service limit: the max no. of ec2 instance can launch
+
+- CloudFormation Drift Detection: detect if any changes from the CloudFormation template
+
+
+- Trust Policy: All IAM roles must have a trust policy. Trust policy specifies which IAM principals can assume the role
+
+- 
