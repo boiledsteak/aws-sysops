@@ -1074,6 +1074,7 @@ CloudFormation
 
 	= StackSets
 		-> manage stack that spans across multiple accounts and regions
+		-> update multiple stacks at the same time
 
 	= Nested Stacks
 		-> a "helper function" that a stack can reference
@@ -1086,7 +1087,7 @@ CloudFormation
 
 CloudFormation Helper Scripts
 
-cf-init
+cfn-init
 AWS::CloudFormation::Init
 - can define what packages to install as EC2 instance is initialised
 - can define what files to be created
@@ -1118,10 +1119,14 @@ CloudFormation CreationPolicy
 CloudFormation DeletionPolicy
 - backup a resource when its stack is deleted
 - all resources are deleted by default
+- to overwrite deletion of resource, must go into individual resource and delete 
+instead of deleting from cloudformation stack
 - 3 parameters can be set. Either one
 	= Retain
+		- specify what resources to retain upon delete
 	= Snapshot
-	= Delete
+		- create one final snapshot before deletion
+	= Delete (default)
 
 CloudFormation DependsOn
 - specify that the creation of a resource follows another
@@ -1130,6 +1135,9 @@ CloudFormation DependsOn
 
 CloudFormation WaitCondition
 - a bit like if statement. if xxx is performed then the resource can be created
+- its like DependsOn but more complex. Requires a cfn-signal to send the signal for WaitCondition
+- whereas DependsOn just use the default event of resource creation to go
+- DependsOn dont need to confiqure a signaller but WaitCondition need
 
 
 CloudFormation UpdatePolicy
@@ -1161,6 +1169,9 @@ CloudFormation UPDATE_ROLLBACK_FAILED
 - defualt rollback
 - cannot update a stack while in this state
 - it needs to go back to original state then can update
+
+
+
 
 
 
