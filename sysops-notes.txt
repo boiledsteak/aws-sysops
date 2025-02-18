@@ -154,7 +154,7 @@ each VPC has its own CIDR block; aka its own local private subnet
 S3 is outside VPC because its a public service
 S3 is like google drive. It does not have querying like mongo or sql
 S3 bucket names must be unique around the world, even other aws accounts
-
+S3 buckets must be deleted before deleting the entire S3 resource
 
 VPC endpoint is used to access AWS services that are public ie S3, through a private connection (doesnt touch internet)
 
@@ -405,6 +405,7 @@ with serverless (lambda),
 - no provision of hardware
 - no provision of OS or software
 - auto scaling
+- lambda very cheap
 
 
 lambda charge you on compute time
@@ -1075,6 +1076,8 @@ CloudFormation
 	= StackSets
 		-> manage stack that spans across multiple accounts and regions
 		-> update multiple stacks at the same time
+		-> to delete a stackset, need to delete all stacks first
+		 
 
 	= Nested Stacks
 		-> a "helper function" that a stack can reference
